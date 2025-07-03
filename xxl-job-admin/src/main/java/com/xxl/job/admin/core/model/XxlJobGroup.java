@@ -15,7 +15,7 @@ import java.util.List;
 public class XxlJobGroup {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "app_name")

@@ -67,6 +67,7 @@ public class XxlJobGroupDaoImpl implements XxlJobGroupDao {
                 .set(xxlJobGroup.addressType, xxlJobGroupValue.getAddressType())
                 .set(xxlJobGroup.addressList, xxlJobGroupValue.getAddressList())
                 .set(xxlJobGroup.updateTime, xxlJobGroupValue.getUpdateTime())
+                .where(xxlJobGroup.id.eq(xxlJobGroupValue.getId()))
                 .execute();
     }
 

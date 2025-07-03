@@ -15,7 +15,7 @@ public class XxlJobInfo {
 
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;				// 主键ID
 	
 	private int jobGroup;		// 执行器主键ID
