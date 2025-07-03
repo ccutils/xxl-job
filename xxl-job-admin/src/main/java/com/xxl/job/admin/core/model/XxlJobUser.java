@@ -1,12 +1,20 @@
 package com.xxl.job.admin.core.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.springframework.util.StringUtils;
 
 /**
  * @author xuxueli 2019-05-04 16:43:12
  */
+@Table
+@Entity
 public class XxlJobUser {
-	
+
+	@Id
+	@GeneratedValue
 	private int id;
 	private String username;		// 账号
 	private String password;		// 密码

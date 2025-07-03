@@ -1,13 +1,23 @@
 package com.xxl.job.admin.core.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.util.Date;
 
 /**
  * xxl-job log, used to track trigger process
  * @author xuxueli  2015-12-19 23:19:09
  */
+@Entity
+@Table
 public class XxlJobLog {
-	
+
+
+	@Id
+	@GeneratedValue
 	private long id;
 	
 	// job info

@@ -1,12 +1,22 @@
 package com.xxl.job.admin.core.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.util.Date;
 
 /**
  * Created by xuxueli on 16/9/30.
  */
+@Table
+@Entity
 public class XxlJobRegistry {
 
+
+    @Id
+    @GeneratedValue
     private int id;
     private String registryGroup;
     private String registryKey;

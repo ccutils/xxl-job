@@ -1,3 +1,12 @@
+
+## XXL-job-jpa
+复制自 [xxl-job 3.1.1](https://github.com/xuxueli/xxl-job)
+仅修改了 dao , 其余代码一行未动。目的是为了使用 JPA 和 QueryDSL 来实现对接不同的数据库.
+只要你的数据库支持hibernate, 基本就可以用来承载 这个修改版的xxl-job-admin
+
+代码未充分测试，使用请谨慎
+
+<hr />
 <p align="center" >
     <img src="https://www.xuxueli.com/doc/static/xxl-job/images/xxl-logo.jpg" width="150">
     <h3 align="center">XXL-JOB</h3>

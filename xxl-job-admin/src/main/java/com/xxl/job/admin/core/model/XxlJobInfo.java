@@ -1,5 +1,7 @@
 package com.xxl.job.admin.core.model;
 
+import jakarta.persistence.*;
+
 import java.util.Date;
 
 /**
@@ -7,8 +9,13 @@ import java.util.Date;
  *
  * @author xuxueli  2016-1-12 18:25:49
  */
+@Entity
+@Table(name = "xxl_job_info")
 public class XxlJobInfo {
-	
+
+
+	@Id
+	@GeneratedValue
 	private int id;				// 主键ID
 	
 	private int jobGroup;		// 执行器主键ID
@@ -36,6 +43,7 @@ public class XxlJobInfo {
 	private String glueRemark;		// GLUE备注
 	private Date glueUpdatetime;	// GLUE更新时间
 
+	@Column(name = "child_jobid")
 	private String childJobId;		// 子任务ID，多个逗号分隔
 
 	private int triggerStatus;		// 调度状态：0-停止，1-运行

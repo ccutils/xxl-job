@@ -1,9 +1,25 @@
 package com.xxl.job.admin.core.model;
 
+import jakarta.persistence.*;
+
 import java.util.Date;
 
+@Table
+@Entity
 public class XxlJobLogReport {
 
+
+    public XxlJobLogReport() {
+    }
+
+    public XxlJobLogReport(Integer runningCount, Integer sucCount, Integer failCount) {
+        this.runningCount = runningCount != null ? runningCount : 0;
+        this.sucCount = sucCount != null ? sucCount : 0;
+        this.failCount = failCount != null ? failCount : 0;
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private Date triggerDay;
