@@ -20,9 +20,10 @@
 	</sql>
 
 	<select id="findDead" parameterType="java.util.HashMap" resultType="java.lang.Integer" >
+		<bind name="deadLine" value="nowTime.toInstant().plusSeconds(-timeout)"/>
 		SELECT t.id
 		FROM xxl_job_registry AS t
-		WHERE t.update_time <![CDATA[ < ]]> DATE_ADD(#{nowTime},INTERVAL -#{timeout} SECOND)
+		WHERE t.update_time <![CDATA[ < ]]> #{deadLine}
 	</select>
 	
 	<delete id="removeDead" parameterType="java.lang.Integer" >
@@ -34,29 +35,67 @@
 	</delete>
 
 	<select id="findAll" parameterType="java.util.HashMap" resultMap="XxlJobRegistry">
+		<bind name="deadLine" value="nowTime.toInstant().plusSeconds(-timeout)"/>
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_job_registry AS t
-		WHERE t.update_time <![CDATA[ > ]]> DATE_ADD(#{nowTime},INTERVAL -#{timeout} SECOND)
+		WHERE t.update_time <![CDATA[ > ]]>  #{deadLine}
 	</select>
 
-	<insert id="registrySaveOrUpdate" >
-		INSERT INTO xxl_job_registry( `registry_group` , `registry_key` , `registry_value`, `update_time`)
+
+	<sql id="saveOrUpdateMySQL">
+		INSERT INTO xxl_job_registry( registry_group , registry_key , registry_value, update_time)
 		VALUES( #{registryGroup}  , #{registryKey} , #{registryValue}, #{updateTime})
-		ON DUPLICATE KEY UPDATE
-			`update_time` = #{updateTime}
+			ON DUPLICATE KEY UPDATE
+								 update_time = #{updateTime}
+	</sql>
+
+	<sql id="saveOrUpdateStd">
+		MERGE INTO xxl_job_registry AS target
+			USING (SELECT #{registryGroup} AS registry_group, #{registryKey} AS registry_key, #{registryValue} AS registry_value, #{updateTime} AS update_time) AS source
+			ON (target.registry_group = source.registry_group AND target.registry_key = source.registry_key)
+			WHEN MATCHED THEN
+				UPDATE SET target.update_time = source.update_time
+			WHEN NOT MATCHED THEN
+				INSERT (registry_group, registry_key, registry_value, update_time)
+					VALUES (source.registry_group, source.registry_key, source.registry_value, source.update_time);
+	</sql>
+
+	<sql id="saveOrUpdatePg">
+		INSERT INTO xxl_job_registry(registry_group, registry_key, registry_value, update_time)
+		VALUES (#{registryGroup}, #{registryKey}, #{registryValue}, #{updateTime})
+		ON CONFLICT (registry_group, registry_key, registry_value)
+			 DO
+		UPDATE
+			SET update_time = EXCLUDED.update_time;
+	</sql>
+
+	<insert id="registrySaveOrUpdate" databaseId="mysql">
+		<include refid="saveOrUpdateMySQL" />
+	</insert>
+
+	<insert id="registrySaveOrUpdate" databaseId="mariadb">
+		<include refid="saveOrUpdateMySQL" />
+	</insert>
+
+	<insert id="registrySaveOrUpdate" databaseId="postgresql">
+		<include refid="saveOrUpdatePg" />
+	</insert>
+
+	<insert id="registrySaveOrUpdate" >
+		<include refid="saveOrUpdateStd" />
 	</insert>
 
 	<!--
     <update id="registryUpdate" >
         UPDATE xxl_job_registry
-        SET `update_time` = #{updateTime}
-        WHERE `registry_group` = #{registryGroup}
-          AND `registry_key` = #{registryKey}
-          AND `registry_value` = #{registryValue}
+        SET update_time = #{updateTime}
+        WHERE registry_group = #{registryGroup}
+          AND registry_key = #{registryKey}
+          AND registry_value = #{registryValue}
     </update>
 
     <insert id="registrySave" >
-        INSERT INTO xxl_job_registry( `registry_group` , `registry_key` , `registry_value`, `update_time`)
+        INSERT INTO xxl_job_registry( registry_group , registry_key , registry_value, update_time)
         VALUES( #{registryGroup}  , #{registryKey} , #{registryValue}, #{updateTime})
     </insert>
 	-->
