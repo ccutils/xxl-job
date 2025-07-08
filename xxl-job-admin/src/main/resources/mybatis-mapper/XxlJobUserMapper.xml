@@ -26,7 +26,8 @@
 		FROM xxl_job_user t
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
 			<if test="username != null and username != ''">
-				AND t.username like CONCAT(CONCAT('%', #{username}), '%')
+				<bind name="usernameLike" value="'%'+username+'%'"/>
+				AND t.username like #{usernameLike}
 			</if>
 			<if test="role gt -1">
 				AND t.role = #{role}

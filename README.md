@@ -7,6 +7,8 @@
 2. 原代码中 [XxlJobLogDao.findLogReport](xxl-job-admin/src/main/java/com/xxl/job/admin/dao/XxlJobLogDao.java) 返回值由一个Map修改为了具体的POJO类
 3. 使用各数据库方言分别实现了[com.xxl.job.admin.dao.XxlJobRegistryDao.registrySaveOrUpdate](xxl-job-admin/src/main/resources/mybatis-mapper/XxlJobRegistryMapper.xml)和[com.xxl.job.admin.dao.XxlJobLogGlueDao.removeOld](xxl-job-admin/src/main/resources/mybatis-mapper/XxlJobLogGlueMapper.xml)
 4. 针对oracle在插入或更新时，字段为NULL 时无法自动匹配对应的数据库列类型引发的异常，补充了相关参数的 jdbcType
+5. 移除了所有的数据库侧函数调用,所有的时间处理与字符串处理, 使用Mybatis 支持的 OGNL 表态式替换
+6. 移除了所有 SELECT * FROM TABLE AS T_ALIAS 中的 AS 关键字, 以适配 oracle
 
 <hr/>
 <p align="center" >
