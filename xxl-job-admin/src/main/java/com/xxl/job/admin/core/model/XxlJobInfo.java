@@ -9,7 +9,7 @@ import java.util.Date;
  */
 public class XxlJobInfo {
 	
-	private int id;				// 主键ID
+	private Integer id;				// 主键ID
 	
 	private int jobGroup;		// 执行器主键ID
 	private String jobDesc;
@@ -43,7 +43,7 @@ public class XxlJobInfo {
 	private long triggerNextTime;	// 下次调度时间
 
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 

@@ -1,12 +1,12 @@
 package com.xxl.job.admin.dao;
 
 import com.xxl.job.admin.core.model.XxlJobLog;
+import com.xxl.job.admin.core.model.result.JobLogDailyReportInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * job log
@@ -31,8 +31,8 @@ public interface XxlJobLogDao {
 
     public int delete(@Param("jobId") int jobId);
 
-    public Map<String, Object> findLogReport(@Param("from") Date from,
-                                             @Param("to") Date to);
+    public JobLogDailyReportInfo findLogReport(@Param("from") Date from,
+                                               @Param("to") Date to);
 
     public List<Long> findClearLogIds(@Param("jobGroup") int jobGroup,
                                       @Param("jobId") int jobId,

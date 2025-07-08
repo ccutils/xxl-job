@@ -1,4 +1,6 @@
-
+-- ==========================================
+-- drop tables
+-- ==========================================
 -- drop table if EXISTS xxl_job_info;
 -- drop table if EXISTS xxl_job_log;
 -- drop table if EXISTS xxl_job_log_report;
@@ -7,6 +9,10 @@
 -- drop table if EXISTS xxl_job_group;
 -- drop table if EXISTS xxl_job_user;
 -- drop table if EXISTS xxl_job_lock;
+
+-- ==========================================
+-- create tables
+-- ==========================================
 -- xxl_job_info table
 CREATE TABLE xxl_job_info
 (
@@ -16,21 +22,21 @@ CREATE TABLE xxl_job_info
     add_time DATETIME NULL,
     update_time DATETIME NULL,
     author NVARCHAR(64) NULL,  -- 作者
-    alarm_email VARCHAR(255) NULL,  -- 报警邮件
-    schedule_type VARCHAR(50) NOT NULL DEFAULT 'NONE',  -- 调度类型
-    schedule_conf VARCHAR(128) NULL,  -- 调度配置
-    misfire_strategy VARCHAR(50) NOT NULL DEFAULT 'DO_NOTHING',  -- 调度过期策略
-    executor_route_strategy VARCHAR(50) NULL,  -- 执行器路由策略
-    executor_handler VARCHAR(255) NULL,  -- 执行器任务handler
+    alarm_email NVARCHAR(255) NULL,  -- 报警邮件
+    schedule_type NVARCHAR(50) NOT NULL DEFAULT 'NONE',  -- 调度类型
+    schedule_conf NVARCHAR(128) NULL,  -- 调度配置
+    misfire_strategy NVARCHAR(50) NOT NULL DEFAULT 'DO_NOTHING',  -- 调度过期策略
+    executor_route_strategy NVARCHAR(50) NULL,  -- 执行器路由策略
+    executor_handler NVARCHAR(255) NULL,  -- 执行器任务handler
     executor_param NVARCHAR(512) NULL,  -- 执行器任务参数
-    executor_block_strategy VARCHAR(50) NULL,  -- 阻塞处理策略
+    executor_block_strategy NVARCHAR(50) NULL,  -- 阻塞处理策略
     executor_timeout INT NOT NULL DEFAULT 0,  -- 任务执行超时时间，单位秒
     executor_fail_retry_count INT NOT NULL DEFAULT 0,  -- 失败重试次数
-    glue_type VARCHAR(50) NOT NULL,  -- GLUE类型
+    glue_type NVARCHAR(50) NOT NULL,  -- GLUE类型
     glue_source NVARCHAR(MAX) NULL,  -- GLUE源代码
     glue_remark NVARCHAR(128) NULL,  -- GLUE备注
     glue_updatetime DATETIME NULL,  -- GLUE更新时间
-    child_jobid VARCHAR(255) NULL,  -- 子任务ID
+    child_jobid NVARCHAR(255) NULL,  -- 子任务ID
     trigger_status INT NOT NULL DEFAULT 0,  -- 调度状态
     trigger_last_time BIGINT NOT NULL DEFAULT 0,  -- 上次调度时间
     trigger_next_time BIGINT NOT NULL DEFAULT 0,  -- 下次调度时间
@@ -43,17 +49,17 @@ CREATE TABLE xxl_job_log
     id BIGINT NOT NULL IDENTITY(1,1),  -- 自增
     job_group INT NOT NULL,  -- 执行器主键ID
     job_id INT NOT NULL,  -- 任务主键ID
-    executor_address VARCHAR(255) NULL,  -- 执行器地址
-    executor_handler VARCHAR(255) NULL,  -- 执行器任务handler
+    executor_address NVARCHAR(255) NULL,  -- 执行器地址
+    executor_handler NVARCHAR(255) NULL,  -- 执行器任务handler
     executor_param NVARCHAR(512) NULL,  -- 执行器任务参数
-    executor_sharding_param VARCHAR(20) NULL,  -- 执行器任务分片参数
+    executor_sharding_param NVARCHAR(20) NULL,  -- 执行器任务分片参数
     executor_fail_retry_count INT NOT NULL DEFAULT 0,  -- 失败重试次数
     trigger_time DATETIME NULL,  -- 调度时间
     trigger_code INT NOT NULL,  -- 调度结果
-    trigger_msg TEXT NULL,  -- 调度日志
+    trigger_msg NTEXT NULL,  -- 调度日志
     handle_time DATETIME NULL,  -- 执行时间
     handle_code INT NOT NULL,  -- 执行状态
-    handle_msg TEXT NULL,  -- 执行日志
+    handle_msg NTEXT NULL,  -- 执行日志
     alarm_status INT NOT NULL DEFAULT 0,  -- 告警状态
     CONSTRAINT PK_xxl_job_log PRIMARY KEY (id),
     INDEX I_trigger_time (trigger_time),
@@ -80,7 +86,7 @@ CREATE TABLE xxl_job_logglue
 (
     id INT NOT NULL IDENTITY(1,1),  -- 自增
     job_id INT NOT NULL,  -- 任务主键ID
-    glue_type VARCHAR(50) NULL,  -- GLUE类型
+    glue_type NVARCHAR(50) NULL,  -- GLUE类型
     glue_source NVARCHAR(MAX) NULL,  -- GLUE源代码
     glue_remark NVARCHAR(128) NOT NULL,  -- GLUE备注
     add_time DATETIME NULL,
@@ -92,9 +98,9 @@ CREATE TABLE xxl_job_logglue
 CREATE TABLE xxl_job_registry
 (
     id INT NOT NULL IDENTITY(1,1),  -- 自增
-    registry_group VARCHAR(50) NOT NULL,
-    registry_key VARCHAR(255) NOT NULL,
-    registry_value VARCHAR(255) NOT NULL,
+    registry_group NVARCHAR(50) NOT NULL,
+    registry_key NVARCHAR(255) NOT NULL,
+    registry_value NVARCHAR(255) NOT NULL,
     update_time DATETIME NULL,
     CONSTRAINT PK_xxl_job_registry PRIMARY KEY (id),
     UNIQUE (registry_group, registry_key, registry_value)
@@ -107,7 +113,7 @@ CREATE TABLE xxl_job_group
     app_name NVARCHAR(64) NOT NULL,  -- 执行器AppName
     title NVARCHAR(12) NOT NULL,  -- 执行器名称
     address_type INT NOT NULL DEFAULT 0,  -- 执行器地址类型
-    address_list TEXT NULL,  -- 执行器地址列表
+    address_list NTEXT NULL,  -- 执行器地址列表
     update_time DATETIME NULL,
     CONSTRAINT PK_xxl_job_group PRIMARY KEY (id)
 );
@@ -116,10 +122,10 @@ CREATE TABLE xxl_job_group
 CREATE TABLE xxl_job_user
 (
     id INT NOT NULL IDENTITY(1,1),  -- 自增
-    username VARCHAR(50) NOT NULL,  -- 账号
-    password VARCHAR(50) NOT NULL,  -- 密码
+    username NVARCHAR(50) NOT NULL,  -- 账号
+    password NVARCHAR(50) NOT NULL,  -- 密码
     role INT NOT NULL,  -- 角色
-    permission VARCHAR(255) NULL,  -- 权限
+    permission NVARCHAR(255) NULL,  -- 权限
     CONSTRAINT PK_xxl_job_user PRIMARY KEY (id),
     UNIQUE (username)
 );
@@ -127,12 +133,13 @@ CREATE TABLE xxl_job_user
 -- xxl_job_lock table
 CREATE TABLE xxl_job_lock
 (
-    lock_name VARCHAR(50) NOT NULL,  -- 锁名称
+    lock_name NVARCHAR(50) NOT NULL,  -- 锁名称
     CONSTRAINT PK_xxl_job_lock PRIMARY KEY (lock_name)
 );
 
-
---  —————————————————————— init data ——————————————————
+-- ==========================================
+-- init data
+-- ==========================================
 INSERT INTO xxl_job_group(app_name, title, address_type, address_list, update_time)
 VALUES ('xxl-job-executor-sample', N'通用执行器Sample', 0, NULL, GETDATE()),
        ('xxl-job-executor-sample-ai', N'AI执行器Sample', 0, NULL, GETDATE());
@@ -170,8 +177,12 @@ INSERT INTO xxl_job_lock (lock_name)
 VALUES ('schedule_lock');
 
 
--- ----------------
--- xxl_job_info 表字段注释转换为 SQL Server 扩展属性注释
+
+
+-- ==========================================
+-- set comment
+-- ==========================================
+
 
 EXEC sp_addextendedproperty 
     @name = N'MS_Description', 

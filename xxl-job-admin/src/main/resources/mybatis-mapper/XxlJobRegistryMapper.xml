@@ -22,7 +22,7 @@
 	<select id="findDead" parameterType="java.util.HashMap" resultType="java.lang.Integer" >
 		<bind name="deadLine" value="nowTime.toInstant().plusSeconds(-timeout)"/>
 		SELECT t.id
-		FROM xxl_job_registry AS t
+		FROM xxl_job_registry t
 		WHERE t.update_time <![CDATA[ < ]]> #{deadLine}
 	</select>
 	
@@ -37,7 +37,7 @@
 	<select id="findAll" parameterType="java.util.HashMap" resultMap="XxlJobRegistry">
 		<bind name="deadLine" value="nowTime.toInstant().plusSeconds(-timeout)"/>
 		SELECT <include refid="Base_Column_List" />
-		FROM xxl_job_registry AS t
+		FROM xxl_job_registry t
 		WHERE t.update_time <![CDATA[ > ]]>  #{deadLine}
 	</select>
 
@@ -58,6 +58,23 @@
 			WHEN NOT MATCHED THEN
 				INSERT (registry_group, registry_key, registry_value, update_time)
 					VALUES (source.registry_group, source.registry_key, source.registry_value, source.update_time);
+	</sql>
+	<sql id="saveOrUpdateOracle">
+		MERGE INTO xxl_job_registry target
+			USING (
+				SELECT
+					#{registryGroup} AS registry_group,
+					#{registryKey} AS registry_key,
+					#{registryValue} AS registry_value,
+					#{updateTime} AS update_time
+				FROM dual
+			) source
+			ON (target.registry_group = source.registry_group AND target.registry_key = source.registry_key)
+			WHEN MATCHED THEN
+				UPDATE SET target.update_time = source.update_time
+			WHEN NOT MATCHED THEN
+				INSERT (registry_group, registry_key, registry_value, update_time)
+					VALUES (source.registry_group, source.registry_key, source.registry_value, source.update_time)
 	</sql>
 
 	<sql id="saveOrUpdatePg">
@@ -81,6 +98,9 @@
 		<include refid="saveOrUpdatePg" />
 	</insert>
 
+	<insert id="registrySaveOrUpdate" databaseId="oracle" >
+		<include refid="saveOrUpdateOracle" />
+	</insert>
 	<insert id="registrySaveOrUpdate" >
 		<include refid="saveOrUpdateStd" />
 	</insert>

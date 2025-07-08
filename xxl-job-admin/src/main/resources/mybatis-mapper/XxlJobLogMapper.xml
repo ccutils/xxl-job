@@ -46,12 +46,13 @@
 
 	<select id="load" parameterType="java.lang.Long" resultMap="XxlJobLog">
 		SELECT <include refid="Base_Column_List" />
-		FROM xxl_job_log AS t
+		FROM xxl_job_log t
 		WHERE t.id = #{id}
 	</select>
 
 	
-	<insert id="save" parameterType="com.xxl.job.admin.core.model.XxlJobLog" useGeneratedKeys="true" keyProperty="id" >
+	<insert id="save" parameterType="com.xxl.job.admin.core.model.XxlJobLog"
+			useGeneratedKeys="true" keyProperty="id" keyColumn="ID" >
 		INSERT INTO xxl_job_log (
 			job_group,
 			job_id,
@@ -59,37 +60,34 @@
 			trigger_code,
 			handle_code
 		) VALUES (
-			#{jobGroup},
-			#{jobId},
-			#{triggerTime},
-			#{triggerCode},
-			#{handleCode}
-		);
-		<!--<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
-			SELECT LAST_INSERT_ID() 
-		</selectKey>-->
+			#{jobGroup,jdbcType=INTEGER},
+			#{jobId,jdbcType=INTEGER},
+			#{triggerTime,jdbcType=TIMESTAMP},
+			#{triggerCode,jdbcType=INTEGER},
+			#{handleCode,jdbcType=INTEGER}
+		)
 	</insert>
 
 	<update id="updateTriggerInfo" >
 		UPDATE xxl_job_log
 		SET
-			trigger_time= #{triggerTime},
-			trigger_code= #{triggerCode},
-			trigger_msg= #{triggerMsg},
-			executor_address= #{executorAddress},
-			executor_handler=#{executorHandler},
-			executor_param= #{executorParam},
-			executor_sharding_param= #{executorShardingParam},
-			executor_fail_retry_count= #{executorFailRetryCount}
+			trigger_time= #{triggerTime,jdbcType=TIMESTAMP},
+			trigger_code= #{triggerCode,jdbcType=INTEGER},
+			trigger_msg= #{triggerMsg,jdbcType=VARCHAR},
+			executor_address= #{executorAddress,jdbcType=LONGVARCHAR},
+			executor_handler=#{executorHandler,jdbcType=INTEGER},
+			executor_param= #{executorParam,jdbcType=VARCHAR},
+			executor_sharding_param= #{executorShardingParam,jdbcType=VARCHAR},
+			executor_fail_retry_count= #{executorFailRetryCount,jdbcType=INTEGER}
 		WHERE id= #{id}
 	</update>
 
 	<update id="updateHandleInfo">
 		UPDATE xxl_job_log
 		SET 
-			handle_time= #{handleTime},
-			handle_code= #{handleCode},
-			handle_msg= #{handleMsg}
+			handle_time= #{handleTime,jdbcType=TIMESTAMP},
+			handle_code= #{handleCode,jdbcType=INTEGER},
+			handle_msg= #{handleMsg,jdbcType=VARCHAR}
 		WHERE id= #{id}
 	</update>
 	
@@ -110,11 +108,17 @@
 		ORDER BY triggerDay
     </select>-->
 
-    <select id="findLogReport" resultType="java.util.Map" >
+	<resultMap id="DailyXxlJobLogReport" type="com.xxl.job.admin.core.model.result.JobLogDailyReportInfo">
+		<result column="trigger_day_count_running" property="triggerDayCountRunning" />
+		<result column="trigger_day_count" property="triggerDayCount" />
+		<result column="trigger_day_count_suc" property="triggerDayCountSuc" />
+	</resultMap>
+
+    <select id="findLogReport" resultMap="DailyXxlJobLogReport" >
 		SELECT
-			COUNT(handle_code) triggerdaycount,
-			SUM(CASE WHEN (trigger_code in (0, 200) and handle_code = 0) then 1 else 0 end) as triggerdaycountrunning,
-			SUM(CASE WHEN handle_code = 200 then 1 else 0 end) as triggerdaycountsuc
+			COUNT(handle_code) trigger_day_count,
+			SUM(CASE WHEN (trigger_code in (0, 200) and handle_code = 0) then 1 else 0 end) as trigger_day_count_running,
+			SUM(CASE WHEN handle_code = 200 then 1 else 0 end) as trigger_day_count_suc
 		FROM xxl_job_log
 		WHERE trigger_time BETWEEN #{from} and #{to}
     </select>
@@ -134,7 +138,7 @@
 			<if test="clearBeforeNum gt 0">
 				AND id NOT in(
 				SELECT id FROM(
-				SELECT id FROM xxl_job_log AS t
+				SELECT id FROM xxl_job_log t
 				<trim prefix="WHERE" prefixOverrides="AND | OR" >
 					<if test="jobGroup gt 0">
 						AND t.job_group = #{jobGroup}
@@ -188,12 +192,12 @@
 			t.trigger_code = 200
 				AND t.handle_code = 0
 				AND t.trigger_time <![CDATA[ <= ]]> #{losedTime}
-				AND t2.id IS NULL;
+				AND t2.id IS NULL
 	</select>
     <select id="list" resultMap="XxlJobLog">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM xxl_job_log AS t
+        FROM xxl_job_log t
         <trim prefix="WHERE" prefixOverrides="AND | OR">
             <if test="jobId==0 and jobGroup gt 0">
                 AND t.job_group = #{jobGroup}
@@ -225,13 +229,13 @@
     </select>
     <!--
     SELECT t.id
-    FROM xxl_job_log AS t
+    FROM xxl_job_log t
     WHERE t.trigger_code = 200
         and t.handle_code = 0
         and t.trigger_time <![CDATA[ <= ]]> #{losedTime}
         and t.executor_address not in (
             SELECT t2.registry_value
-            FROM xxl_job_registry AS t2
+            FROM xxl_job_registry t2
         )
     -->
 
