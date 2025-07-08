@@ -65,12 +65,12 @@
 		FROM xxl_job_group t
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
 			<if test="appname != null and appname != ''">
-				<bind name="appnameLike" value="'%'+appname+'%'" />
-				AND t.app_name like #{appnameLike}
+				<bind name="appnameLike" value="'%'+appname.toLowerCase()+'%'" />
+				AND LOWER(t.app_name) like #{appnameLike}
 			</if>
 			<if test="title != null and title != ''">
-				<bind name="titleLike" value="'%'+title+'%'" />
-				AND t.title like #{titleLike}
+				<bind name="titleLike" value="'%'+title.toLowerCase()+'%'" />
+				AND LOWER(t.title) like #{titleLike}
 			</if>
 		</trim>
 		ORDER BY t.app_name, t.title, t.id ASC

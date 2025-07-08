@@ -77,16 +77,16 @@
                 AND t.trigger_status = #{triggerStatus}
             </if>
 			<if test="jobDesc != null and jobDesc != ''">
-				<bind name="jobDescLike" value="'%'+jobDesc+'%'"/>
-				AND t.job_desc like #{jobDescLike}
+				<bind name="jobDescLike" value="'%' + jobDesc.toLowerCase() + '%'"/>
+				AND  LOWER(t.job_desc) like  #{jobDescLike}
 			</if>
 			<if test="executorHandler != null and executorHandler != ''">
-				<bind name="executorHandlerLike" value="'%'+executorHandler+'%'"/>
-				AND t.executor_handler like  #{executorHandlerLike}
+				<bind name="executorHandlerLike" value="'%' + executorHandler.toLowerCase() + '%'"/>
+				AND  LOWER(t.executor_handler) like #{executorHandlerLike}
 			</if>
 			<if test="author != null and author != ''">
-				<bind name="authorLike" value="'%'+author+'%'"/>
-				AND t.author like #{authorLike}
+				<bind name="authorLike" value="'%' + author.toLowerCase() +'%'"/>
+				AND  LOWER(t.author) like  #{authorLike}
 			</if>
 		</trim>
 	</select>
@@ -217,16 +217,16 @@
 				AND t.trigger_status = #{triggerStatus}
 			</if>
 			<if test="jobDesc != null and jobDesc != ''">
-				<bind name="jobDescLike" value="'%'+jobDesc+'%'"/>
-				AND t.job_desc like #{jobDescLike}
+				<bind name="jobDescLike" value="'%'+jobDesc.toLowerCase()+'%'"/>
+				AND LOWER(t.job_desc) like #{jobDescLike}
 			</if>
 			<if test="executorHandler != null and executorHandler != ''">
-				<bind name="executorHandlerLike" value="'%'+executorHandler+'%'"/>
-				AND t.executor_handler like #{executorHandlerLike}
+				<bind name="executorHandlerLike" value="'%'+executorHandler.toLowerCase()+'%'"/>
+				AND LOWER(t.executor_handler) like #{executorHandlerLike}
 			</if>
 			<if test="author != null and author != ''">
-				<bind name="authorLike" value="'%'+author+'%'"/>
-				AND t.author like #{authorLike}
+				<bind name="authorLike" value="'%'+author.toLowerCase()+'%'"/>
+				AND LOWER(t.author) like #{authorLike}
 			</if>
 		</trim>
 		ORDER BY id DESC
