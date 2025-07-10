@@ -1,6 +1,6 @@
 复制自 [xxl-job 3.1.1](https://github.com/xuxueli/xxl-job/tree/3.1.1)
 原来的xxl-job 仅支持使用mysql或mariadb. 通过引入 PageHelper 库生使用 DatabaseProvideId 来实现支持不同数据库.
-目前初步测试通近的数据库有 mysql/postgres/sqlserver(2016 以上版本)/oracle(12C 及以上,12C 以下不支持)
+目前初步测试通近的数据库有 mysql/postgres/sqlserver(2016 以上版本)/oracle(12C 及以上,12C 以下不支持)/opengauss 6.0.0/达梦8
 
 主要改动点如下:
 1. 所有的分页使用 PageHelper 的实现来替换
