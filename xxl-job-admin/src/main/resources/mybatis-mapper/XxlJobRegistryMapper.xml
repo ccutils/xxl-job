@@ -52,7 +52,7 @@
 	<sql id="saveOrUpdateStd">
 		MERGE INTO xxl_job_registry AS target
 			USING (SELECT #{registryGroup} AS registry_group, #{registryKey} AS registry_key, #{registryValue} AS registry_value, #{updateTime} AS update_time) AS source
-			ON (target.registry_group = source.registry_group AND target.registry_key = source.registry_key)
+			ON (target.registry_group = source.registry_group AND target.registry_key = source.registry_key AND target.registry_value = source.registry_value )
 			WHEN MATCHED THEN
 				UPDATE SET target.update_time = source.update_time
 			WHEN NOT MATCHED THEN
@@ -69,7 +69,7 @@
 					#{updateTime} AS update_time
 				FROM dual
 			) source
-			ON (target.registry_group = source.registry_group AND target.registry_key = source.registry_key)
+			ON (target.registry_group = source.registry_group AND target.registry_key = source.registry_key AND target.registry_value = source.registry_value)
 			WHEN MATCHED THEN
 				UPDATE SET target.update_time = source.update_time
 			WHEN NOT MATCHED THEN
@@ -96,6 +96,10 @@
 
 	<insert id="registrySaveOrUpdate" databaseId="postgresql">
 		<include refid="saveOrUpdatePg" />
+	</insert>
+
+	<insert id="registrySaveOrUpdate" databaseId="opengauss">
+		<include refid="saveOrUpdateMySQL" />
 	</insert>
 
 	<insert id="registrySaveOrUpdate" databaseId="oracle" >

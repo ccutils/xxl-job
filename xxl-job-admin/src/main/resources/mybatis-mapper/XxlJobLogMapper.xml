@@ -52,7 +52,7 @@
 
 	
 	<insert id="save" parameterType="com.xxl.job.admin.core.model.XxlJobLog"
-			useGeneratedKeys="true" keyProperty="id" keyColumn="ID" >
+			useGeneratedKeys="true" keyProperty="id" keyColumn="id" >
 		INSERT INTO xxl_job_log (
 			job_group,
 			job_id,
